@@ -1,0 +1,351 @@
+#include <iostream>
+#include <locale.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+using namespace std;
+
+class String {
+
+private:
+    const char* cadeia;
+
+public:
+    String() {
+        cadeia = "";
+    }
+
+    String(char letra) {
+        cadeia = &letra; // ERRO
+    }
+
+    String(const char* palavra) {
+        cadeia = new char(tamanho(palavra));
+        cadeia = palavra;
+    }
+
+    ~String() {
+        //Destrutor
+    }
+
+    void setCadeia(const char* cadeia) {
+        this->cadeia = cadeia;
+    }
+
+    const char* getCadeia() {
+        return this->cadeia;
+    }
+
+    // e) Método que retorne o comprimento da cadeia;
+    // Conta o tamanho do vetor de caracteres
+    int tamanho(const char* palavra) {
+        int tamanho = 0;
+
+        for (int i = 0; palavra[i] != '\0'; i++) {
+            tamanho = i + 1;
+        }
+
+        return tamanho;
+    }
+
+    // Conta em qual posição está a primeira letra passada da palavra.
+    int indice(char letra) {
+        int pos = -1;
+        int tam = tamanho(cadeia);
+
+        for (int i = 0; i < tam; i++) {
+            if (cadeia[i] == letra) {
+                pos = i;
+                return pos;
+            }
+        }
+
+        return pos;
+    }
+
+    // j) char c = a[0]; //retorna o primeiro caracter da String a
+    // Método que retorna o primeiro caractere da palavra
+    char primeiroCaractere() {
+        char primeiraLetra = ' ';
+        primeiraLetra = cadeia[0];
+
+        return primeiraLetra;
+    }
+
+    void operator= (String* palavra) {
+        cadeia = palavra->cadeia;
+
+    }
+
+    String* operator+= (String* b) {
+        int tamanhoTotal = tamanho(cadeia) + tamanho(b->cadeia) +1;
+        int tam = tamanho(cadeia);
+        char* soma = new char[tamanhoTotal];
+        int j = 0;
+
+        for (int i = 0; i < tamanhoTotal; i++) {
+            if (i < tam) {
+                soma[i] = cadeia[i];
+            }
+
+            if (i >= tam) {
+                soma[i] = b->cadeia[j];
+                j = j + 1;
+            }
+        }
+        String* somado = new String(soma);
+
+        return somado;
+    }
+
+    String* operator+ (char* palavra) {
+        int tamanhoCadeia = tamanho(cadeia);
+        int tamanhoPalavra = tamanho(palavra);
+        int tamanhoTotal = tamanhoCadeia + tamanhoPalavra +1;
+        char* soma = new char[tamanhoTotal];
+        int j = 0;
+        for (int i = 0; i < tamanhoTotal; i++) {
+            if (i < tamanhoCadeia) {
+                soma[i] = cadeia[i];
+            }
+
+            if (i >= tamanhoCadeia) {
+                soma[i] = palavra[j];
+                j = j + 1;
+            }
+        }
+
+        String* concatenado = new String(soma);
+
+        return concatenado;
+    }
+    //-----------------  OPERADORES LOGICOS; ----------------------
+
+    // Se as strings forem diferentes é retornado false(0) se não retorna true(1)
+    // diferente 0; igual 1;
+    bool operator==(String* a) {
+        bool resultado = true;
+
+        if (tamanho(cadeia) == tamanho(a->cadeia)) {
+            for (int i = 0; i < tamanho(cadeia); i++) {
+
+                if (cadeia[i] != a->cadeia[i]) {
+                    resultado = false;
+
+                    return resultado;
+                }
+            }
+        }
+
+        else {
+            resultado = false;
+        }
+
+        return resultado;
+    }
+
+    // Se as strings forem iguais é retornado false(0) se não retorna true(1)
+    // diferente 1; igual 0;
+    bool operator!=(String* a) {
+        bool resultado = false;
+
+        if (tamanho(cadeia) == tamanho(a->cadeia)) {
+            for (int i = 0; i < tamanho(cadeia); i++) {
+                if (cadeia[i] != a->cadeia[i]) {
+                    resultado = true;
+                    return resultado;
+                }
+            }
+        }
+
+        else {
+            resultado = true;
+        }
+
+        return resultado;
+    }
+
+    // Verifica se é maior se a>b true(1) se não false
+    bool operator>(String* a) {
+
+        if (tamanho(cadeia) > tamanho(a->cadeia)) {
+            return true;
+        }
+
+        else {
+            return false;
+        }
+    }
+
+    // Verifica se é maior se a é maior ou igual a b se sim retorna true(1) se não false
+    bool operator>=(String* a) {
+        if (tamanho(cadeia) >= tamanho(a->cadeia)) {
+            return true;
+        }
+
+        else {
+            return false;
+        }
+    }
+
+    // Verifica se é maior se a>b true(1) se não false
+    bool operator<(String* a)
+    {
+        if (tamanho(cadeia) < tamanho(a->cadeia))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // Verifica se é menor se a é menor ou igual a b se sim retorna true(1) se não false
+    bool operator<=(String* a)
+    {
+        if (tamanho(cadeia) <= tamanho(a->cadeia))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    //------------------ Operadores de fluxo ----------------------------------
+
+    ostream& operator<<(String *s)
+    {
+        ostream& Saida = cout;
+        Saida << "X: " << cadeia;
+        return Saida;
+    }
+
+};
+
+int main()
+{
+    setlocale(LC_ALL, "Portuguese");
+
+
+    char ca[100];
+    char cb[100];
+    cout << "------------------- ATRIBUICAO E CONCATENACAO ---------------------" << endl;
+    cout << "Digite a primeira palavra.\n";
+    cin.getline(ca, 100);
+    cout << "Digite a segunda palavra.\n";
+    cin.getline(cb, 100);
+    
+    String *s = new String(ca);
+    String *a = new String(cb);
+    // Tamanho da String
+    cout << "Tamanho da primeira: " << s->tamanho(s->getCadeia()) << endl;
+    cout << "Tamanho da segunda: " << a->tamanho(a->getCadeia()) << endl;
+    
+    // Teste da sobrecarga += ---------------------------
+    s = *s += a;
+    cout <<"Atribuicao da concatenacao: " <<  s->getCadeia() << endl;
+    cout << "Tamanho Total: " << s->tamanho(s->getCadeia()) << endl; 
+    cout << "Primeiro caractere da primeira palavra: " << s->primeiroCaractere() << endl;
+
+    cout << "--------------- CONCATENACAO --------------------------" << endl;
+    
+    char stringConst[100];
+    char vetor[100];
+    cout << "Digite uma string: " << endl;
+    cin >> stringConst;
+    String* b = new String(stringConst);
+    cout << "Digite uma palavra: " << endl;
+    cin >> vetor;
+    // Teste de concatenação +
+    String* concatenado = *b + vetor;
+    cout << "Concatenado: " << concatenado->getCadeia() << endl;
+    // Teste primeira letra INDICE
+    cout << "--------------- INDICE --------------------------" << endl;
+    char letra;
+    cout << "Digite uma letra" << endl;
+    cin >> letra;
+    cout << "Digite uma palavra: " << endl;
+    cin >> vetor;
+    String* verIndice = new String(vetor);
+    cout << "Indice da letra '" << letra << "': " << verIndice->indice(letra);
+    cout << "\n--------------- OPERADORES LOGICOS --------------------------" << endl;
+    cout << "Se for verdadeiro retorna 1 se falso retorna 0" << endl;
+    cout << "Igualdade ==" << endl;
+    cout << "Digite a primeira palavra: ";
+    cin >> ca;
+    cout << "Digite a segunda palavra: ";
+    cin >> cb;
+    String *primeira = new String(ca);
+    String* segunda = new String(cb);
+    bool resposta = *primeira == segunda;
+    cout << "Resposta: " << resposta << endl;
+
+
+    cout << "Diferente !=" << endl;
+    cout << "Digite a primeira palavra: ";
+    cin >> ca;
+    cout << "Digite a segunda palavra: ";
+    cin >> cb;
+    primeira = new String(ca);
+    segunda = new String(cb);
+    resposta = *primeira != segunda;
+    cout << "Resposta: " << resposta << endl;
+
+    cout << "Maior >" << endl;
+    cout << "Digite a primeira palavra: ";
+    cin >> ca;
+    cout << "Digite a segunda palavra: ";
+    cin >> cb;
+    primeira = new String(ca);
+    segunda = new String(cb);
+    resposta = *primeira > segunda;
+    cout << "Resposta: " << resposta << endl;
+
+    cout << "Menor <" << endl;
+    cout << "Digite a primeira palavra: ";
+    cin >> ca;
+    cout << "Digite a segunda palavra: ";
+    cin >> cb;
+    primeira = new String(ca);
+    segunda = new String(cb);
+    resposta = *primeira < segunda;
+    cout << "Resposta: " << resposta << endl;
+
+    cout << "Menor ou igual <=" << endl;
+    cout << "Digite a primeira palavra: ";
+    cin >> ca;
+    cout << "Digite a segunda palavra: ";
+    cin >> cb;
+    primeira = new String(ca);
+    segunda = new String(cb);
+    resposta = *primeira <= segunda;
+    cout << "Resposta: " << resposta << endl;
+
+    cout << "Maior ou igual >=" << endl;
+    cout << "Digite a primeira palavra: ";
+    cin >> ca;
+    cout << "Digite a segunda palavra: ";
+    cin >> cb;
+    primeira = new String(ca);
+    segunda = new String(cb);
+    resposta = *primeira >= segunda;
+    cout << "Resposta: " << resposta << endl;
+    //s->~String();
+    return 0;
+
+}
+
+
+// Executar programa: Ctrl + F5 ou Menu Depurar > Iniciar Sem Depuração
+// Depurar programa: F5 ou menu Depurar > Iniciar Depuração
+
+// Dicas para Começar: 
+//   1. Use a janela do Gerenciador de Soluções para adicionar/gerenciar arquivos
+//   2. Use a janela do Team Explorer para conectar-se ao controle do código-fonte
+//   3. Use a janela de Saída para ver mensagens de saída do build e outras mensagens
+//   4. Use a janela Lista de Erros para exibir erros
+//   5. Ir Para o Projeto > Adicionar Novo Item para criar novos arquivos de código, ou Projeto > Adicionar Item Existente para adicionar arquivos de código existentes ao projeto
+//   6. No futuro, para abrir este projeto novamente, vá para Arquivo > Abrir > Projeto e selecione o arquivo. sln
